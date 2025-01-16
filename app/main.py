@@ -10,12 +10,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 # Página principal en /index.html
-@app.get("/index.html", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 # Nuevos destacados en /index.html/nuevos_destacados.html
-@app.get("/index.html/nuevos_destacados.html", response_class=HTMLResponse)
+@app.get("/nuevos_destacados.html", response_class=HTMLResponse)
 async def nuevos_destacados(request: Request):
     juegos = [{"nombre": "Aloft", "descripcion": "Aloft es un juego de supervivencia acogedor y apacible ambientado entre nubes, donde puedes transformar cualquier isla en una nave voladora con la que explorar los cielos."},
               {"nombre": "Path Of Exile 2", "descripcion": "Path of Exile 2 es un RPG de acción gratuito de nueva generación creado por Grinding Gear Games, con un modo cooperativo de hasta seis jugadores."},
@@ -26,7 +26,7 @@ async def nuevos_destacados(request: Request):
     return templates.TemplateResponse("nuevos_destacados.html", {"request": request, "juegos": juegos})
 
 # Top clásicos en /index.html/top_clasicos.html
-@app.get("/index.html/top_clasicos.html", response_class=HTMLResponse)
+@app.get("/top_clasicos.html", response_class=HTMLResponse)
 async def top_clasicos(request: Request):
     clasicos = [{"nombre": "Super Mario 64", "año": 1996},
                 {"nombre": "The Legend of Zelda Ocarina of Time", "año": 1998},
@@ -34,7 +34,7 @@ async def top_clasicos(request: Request):
     return templates.TemplateResponse("top_clasicos.html", {"request": request, "clasicos": clasicos})
 
 # Por género en /index.html/por_genero.html
-@app.get("/index.html/por_genero.html", response_class=HTMLResponse)
+@app.get("/por_genero.html", response_class=HTMLResponse)
 async def por_genero(request: Request):
     generos = [
         {"nombre": "Acción", "juegos": ["God of War", "Call of Duty", "Apex Legends"]},
