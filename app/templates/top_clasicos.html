@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Clásicos - Videojuegos Infinity</title>
+    <link rel="stylesheet" href="../../static/css/top_clasicos.css">
+</head>
+<body>
+    <header>
+        <h1>Top Clásicos - Videojuegos Infinity</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Inicio</a></li>
+            <li><a href="/index.html/nuevos_destacados.html">Nuevos Destacados</a></li>
+            <li><a href="/index.html/top_clasicos.html">Top Clásicos</a></li>
+            <li><a href="/index.html/por_genero.html">Por Géneros</a></li>
+        </ul>
+    </nav>
+    <div class="hero">
+        <h2>Revive los Clásicos del Mundo Gamer</h2>
+    </div>
+    <div class="section">
+        <h2>Juegos Clásicos</h2>
+        <div class="cards">
+            {% for clasico in clasicos %}
+            <div class="card">
+                <img src="../../static/images/top_clasicos/{{ clasico.nombre | lower | replace(' ', '_') }}.jpg" alt="{{ clasico.nombre }}">
+                <div class="card-content">
+                    <h3>{{ clasico.nombre }}</h3>
+                    <p>Año: {{ clasico.año }}</p>
+                    <p>Revive el clásico que marcó historia en el mundo de los videojuegos.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Videojuegos Infinity. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevos Destacados - Videojuegos</title>
+    <link rel="stylesheet" href="../../static/css/nuevos_destacados.css">
+</head>
+<body>
+    <header>
+        <h1>Nuevos Videojuegos Destacados</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/index.html">Inicio</a></li>
+            <li><a href="/index.html/nuevos_destacados.html">Nuevos Destacados</a></li>
+            <li><a href="/index.html/top_clasicos.html">Top Clásicos</a></li>
+            <li><a href="/index.html/por_genero.html">Por Géneros</a></li>
+        </ul>
+    </nav>
+
+    <section class="nuevos-destacados">
+        <h2>Estos son los videojuegos más recientes:</h2>
+        <div class="juegos">
+            {% for juego in juegos %}
+                <div class="juego">
+                    <img src="../../static/images/nuevos_destacados/{{ juego.nombre | lower | replace(' ', '_') }}.jpg" alt="{{ juego.nombre }}">
+                    <h3>{{ juego.nombre }}</h3>
+                    <p>{{ juego.descripcion }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Videojuegos Infinity. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>
