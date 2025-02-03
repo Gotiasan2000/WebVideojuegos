@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+from app.database import get_db_connection
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -44,3 +46,45 @@ async def por_genero(request: Request):
         {"nombre": "Estrategia", "juegos": ["StarCraft", "Age of Empires", "Civilization VI"]},
     ]
     return templates.TemplateResponse("por_genero.html", {"request": request, "generos": generos}) 
+
+class Juego(BaseModel):
+    nombre: str
+
+# Endpoint para obtener la lista de juegos guardados
+@app.get("/mi_lista.html", response_class=HTMLResponse)
+async def mi_lista(request: Request):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT nombre FROM juegos")  # Obtener la lista de juegos de la BD
+    juegos = [fila[0] for fila in cursor.fetchall()]
+    cursor.close()
+    db.close()
+    
+    return templates.TemplateResponse("mi_lista.html", {"request": request, "juegos": juegos})
+
+# Endpoint para añadir un juego
+@app.post("/mi_lista.html")
+async def agregar_juego(juego: Juego):
+    db = get_db_connection()
+    cursor = db.cursor()
+    try:
+        cursor.execute("INSERT INTO juegos (nombre) VALUES (%s)", (juego.nombre,))
+        db.commit()
+        return {"mensaje": f"Juego '{juego.nombre}' añadido"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        cursor.close()
+        db.close()
+
+# Endpoint para eliminar un juego
+@app.delete("/mi_lista.html/{nombre}")
+async def eliminar_juego(nombre: str):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM juegos WHERE nombre = %s", (nombre,))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"mensaje": f"Juego '{nombre}' eliminado"}
