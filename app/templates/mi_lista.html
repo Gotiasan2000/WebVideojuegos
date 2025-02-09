@@ -12,11 +12,11 @@
     </header>
     <nav>
         <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/nuevos_destacados.html">Nuevos Destacados</a></li>
-            <li><a href="/top_clasicos.html">Top Clásicos</a></li>
-            <li><a href="/por_genero.html">Por Género</a></li>
-            <li><a href="/mi_lista.html">Mi Lista</a></li>
+            <li><a href="{{ url_for('home') }}">Inicio</a></li>
+            <li><a href="{{ url_for('nuevos_destacados') }}">Nuevos Destacados</a></li>
+            <li><a href="{{ url_for('top_clasicos') }}">Top Clásicos</a></li>
+            <li><a href="{{ url_for('por_genero') }}">Por Género</a></li>
+            <li><a href="{{ url_for('mi_lista') }}">Mi Lista</a></li>
         </ul>
     </nav>
 
