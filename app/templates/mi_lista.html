@@ -22,45 +22,35 @@
 
     <div class="section">
         <h2>Agregar un Videojuego</h2>
-        <form id="addGameForm">
-            <input type="text" id="gameName" placeholder="Nombre del videojuego" required>
+        <form action="/mi_lista.html/agregar" method="post">
+            <input type="text" name="nombre" placeholder="Nombre del videojuego" required>
             <button type="submit">Agregar</button>
         </form>
     </div>
 
     <div class="section">
+        <h2>Actualizar un Videojuego</h2>
+        <form action="/mi_lista.html/actualizar" method="post">
+            <input type="text" name="nombre_actual" placeholder="Nombre actual" required>
+            <input type="text" name="nombre_nuevo" placeholder="Nuevo nombre" required>
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+    <div class="section">
         <h2>Mis Videojuegos</h2>
-        <select id="gameList" size="5">
-            {% for juego in juegos %}
-                <option value="{{ juego }}">{{ juego }}</option>
-            {% endfor %}
-        </select>
-        <button id="deleteGame">Eliminar Seleccionado</button>
+        <form action="/mi_lista.html/eliminar" method="post">
+            <select name="nombre" size="5">
+                {% for juego in juegos %}
+                    <option value="{{ juego }}">{{ juego }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Eliminar Seleccionado</button>
+        </form>
     </div>
 
     <footer>
         <p>&copy; 2025 Videojuegos Infinity. Todos los derechos reservados.</p>
     </footer>
-
-    <script>
-        document.getElementById("addGameForm").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            const gameName = document.getElementById("gameName").value;
-            await fetch("/mi_lista.html", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre: gameName })
-            });
-            location.reload(); // Recargar para actualizar la lista
-        });
-
-        document.getElementById("deleteGame").addEventListener("click", async () => {
-            const gameList = document.getElementById("gameList");
-            const selectedGame = gameList.value;
-            if (!selectedGame) return;
-            await fetch(`/mi_lista.html/${selectedGame}`, { method: "DELETE" });
-            location.reload();
-        });
-    </script>
 </body>
 </html>

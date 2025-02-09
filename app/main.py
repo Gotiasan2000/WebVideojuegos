@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, Form, HTTPException, Depends
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 from app.database import get_db_connection
 
 app = FastAPI()
@@ -47,9 +46,6 @@ async def por_genero(request: Request):
     ]
     return templates.TemplateResponse("por_genero.html", {"request": request, "generos": generos}) 
 
-class Juego(BaseModel):
-    nombre: str
-
 # Endpoint para obtener la lista de juegos guardados
 @app.get("/mi_lista.html", response_class=HTMLResponse)
 async def mi_lista(request: Request):
@@ -63,28 +59,39 @@ async def mi_lista(request: Request):
     return templates.TemplateResponse("mi_lista.html", {"request": request, "juegos": juegos})
 
 # Endpoint para añadir un juego
-@app.post("/mi_lista.html")
-async def agregar_juego(juego: Juego):
+@app.post("/mi_lista.html/agregar")
+async def agregar_juego(nombre: str = Form(...)):
     db = get_db_connection()
     cursor = db.cursor()
     try:
-        cursor.execute("INSERT INTO juegos (nombre) VALUES (%s)", (juego.nombre,))
+        cursor.execute("INSERT INTO juegos (nombre) VALUES (%s)", (nombre,))
         db.commit()
-        return {"mensaje": f"Juego '{juego.nombre}' añadido"}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     finally:
         cursor.close()
         db.close()
+    return RedirectResponse(url="/mi_lista.html", status_code=303)
+
+# Endpoint para actualizar un juego
+@app.post("/mi_lista.html/actualizar")
+async def actualizar_juego(nombre_actual: str = Form(...), nombre_nuevo: str = Form(...)):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("UPDATE juegos SET nombre = %s WHERE nombre = %s", (nombre_nuevo, nombre_actual))
+    db.commit()
+    cursor.close()
+    db.close()
+    return RedirectResponse(url="/mi_lista.html", status_code=303)
 
 # Endpoint para eliminar un juego
-@app.delete("/mi_lista.html/{nombre}")
-async def eliminar_juego(nombre: str):
+@app.post("/mi_lista.html/eliminar")
+async def eliminar_juego(nombre: str = Form(...)):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("DELETE FROM juegos WHERE nombre = %s", (nombre,))
     db.commit()
     cursor.close()
     db.close()
-    return {"mensaje": f"Juego '{nombre}' eliminado"}
+    return RedirectResponse(url="/mi_lista.html", status_code=303)
